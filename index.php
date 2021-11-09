@@ -1,63 +1,158 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PHP CRUD Application Using jQuery Ajax</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-    integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-</head>
+<html>
+ <head>
+  <title>How to Read Mysql Data by using PHP PDO with Ajax - PHP PDO CRUD with Ajax</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <style>
+   body
+   {
+    margin:0;
+    padding:0;
+    background-color:#f1f1f1;
+   }
+   .box
+   {
+    width:1270px;
+    padding:20px;
+    background-color:#fff;
+    border:1px solid #ccc;
+    border-radius:5px;
+    margin-top:100px;
+   }
+  </style>
+ </head>
+ <body>
+  <div class="container box">
+   <h1 align="center">PHP PDO CRUD with Ajax Jquery and Bootstrap</h1>
+   <br />
+   <div align="right">
+    <button type="button" id="modal_button" class="btn btn-info">Create Records</button>
+    <!-- It will show Modal for Create new Records !-->
+   </div>
+   <br />
+   <div id="result" class="table-responsive"> <!-- Data will load under this tag!-->
 
-<body>
-  <div class="container">
-    <div class="alert alert alert-primary" role="alert">
-      <h4 class="text-primary text-center">PHP CRUD Application Using jQuery Ajax</h4>
-    </div>
-    <div class="alert alert-success text-center message" role="alert">
-
-    </div>
-<?php
-include_once 'form.php';
-include_once 'description.php';
-?>
-    <div class="row mb-3">
-      <div class="col-3">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#userModal" id="addnewbtn">Add New <i
-            class="fa fa-user-circle-o"></i></button>
-      </div>
-      <div class="col-9">
-        <div class="input-group input-group-lg">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon2"><i class="fa fa-search" aria-hidden="true"></i></span>
-          </div>
-          <input type="text" class="form-control" aria-label="Sizing example input"
-            aria-describedby="inputGroup-sizing-lg" placeholder="Search..." id="searchinput">
-
-        </div>
-      </div>
-    </div>
-<?php
-include_once 'itenstable.php';
-?>
-    <nav id="pagination">
-    </nav>
-    <input type="hidden" name="currentpage" id="currentpage" value="1">
+   </div>
   </div>
-  <div>
-
-    <!-- JS, Popper.js, and jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-    <script src="js/script.js"></script>
-  </div>
-  <div id="overlay" style="display:none;">
-    <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;"></div>
-    <br />
-    Loading...
-  </div>
-</body>
+ </body>
 </html>
+
+<!-- This is product Modal. It will be use for Create new Records and Update Existing Records!-->
+<div id="productModal" class="modal fade">
+ <div class="modal-dialog">
+  <div class="modal-content">
+   <div class="modal-header">
+    <h4 class="modal-title">Create New Records</h4>
+   </div>
+   <div class="modal-body">
+    <label>Enter Product Name</label>
+    <input type="text" name="product_name" id="product_name" class="form-control" />
+    <br />
+    <label>Enter Product Value</label>
+    <input type="text" name="product_value" id="product_value" class="form-control" />
+    <br />
+   </div>
+   <div class="modal-footer">
+    <input type="hidden" name="product_id" id="product_id" />
+    <input type="submit" name="action" id="action" class="btn btn-success" />
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+   </div>
+  </div>
+ </div>
+</div>
+
+<script>
+$(document).ready(function(){
+ fetchUser(); //This function will load all data on web page when page load
+ function fetchUser() // This function will fetch data from table and display under <div id="result">
+ {
+  var action = "Load";
+  $.ajax({
+   url : "action.php", //Request send to "action.php page"
+   method:"POST", //Using of Post method for send data
+   data:{action:action}, //action variable data has been send to server
+   success:function(data){
+    $('#result').html(data); //It will display data under div tag with id result
+   }
+  });
+ }
+
+ //This JQuery code will Reset value of Modal item when modal will load for create new records
+ $('#modal_button').click(function(){
+  $('#productModal').modal('show'); //It will load modal on web page
+  $('#product_name').val(''); //This will clear Modal Product Name textbox
+  $('#product_value').val(''); //This will clear Modal Product Value textbox
+  $('.modal-title').text("Create New Records"); //It will change Modal title to Create new Records
+  $('#action').val('Create'); //This will reset Button value ot Create
+ });
+
+ //This JQuery code is for Click on Modal action button for Create new records or Update existing records. This code will use for both Create and Update of data through modal
+ $('#action').click(function(){
+  var firstName = $('#product_name').val(); //Get the value of Product Name textbox.
+  var lastName = $('#product_value').val(); //Get the value of Product Value textbox
+  var id = $('#product_id').val();  //Get the value of hidden field product id
+  var action = $('#action').val();  //Get the value of Modal Action button and stored into action variable
+  if(firstName != '' && lastName != '') //This condition will check both variable has some value
+  {
+   $.ajax({
+    url : "action.php",    //Request send to "action.php page"
+    method:"POST",     //Using of Post method for send data
+    data:{firstName:firstName, lastName:lastName, id:id, action:action}, //Send data to server
+    success:function(data){
+     alert(data);    //It will pop up which data it was received from server side
+     $('#productModal').modal('hide'); //It will hide product Modal from webpage.
+     fetchUser();    // Fetch User function has been called and it will load data under divison tag with id result
+    }
+   });
+  }
+  else
+  {
+   alert("Both Fields are Required"); //If both or any one of the variable has no value them it will display this message
+  }
+ });
+
+ //This JQuery code is for Update product data. If we have click on any product row update button then this code will execute
+ $(document).on('click', '.update', function(){
+  var id = $(this).attr("id"); //This code will fetch any product id from attribute id with help of attr() JQuery method
+  var action = "Select";   //We have define action variable value is equal to select
+  $.ajax({
+   url:"action.php",   //Request send to "action.php page"
+   method:"POST",    //Using of Post method for send data
+   data:{id:id, action:action},//Send data to server
+   dataType:"json",   //Here we have define json data type, so server will send data in json format.
+   success:function(data){
+    $('#productModal').modal('show');   //It will display modal on webpage
+    $('.modal-title').text("Update Records"); //This code will change this class text to Update records
+    $('#action').val("Update");     //This code will change Button value to Update
+    $('#product_id').val(id);     //It will define value of id variable to this product id hidden field
+    $('#product_name').val(data.product_name);  //It will assign value to modal Product Name texbox
+    $('#product_value').val(data.product_value);  //It will assign value of modal Product Value textbox
+   }
+  });
+ });
+
+ //This JQuery code is for Delete product data. If we have click on any product row delete button then this code will execute
+ $(document).on('click', '.delete', function(){
+  var id = $(this).attr("id"); //This code will fetch any product id from attribute id with help of attr() JQuery method
+  if(confirm("Are you sure you want to remove this data?")) //Confim Box if OK then
+  {
+   var action = "Delete"; //Define action variable value Delete
+   $.ajax({
+    url:"action.php",    //Request send to "action.php page"
+    method:"POST",     //Using of Post method for send data
+    data:{id:id, action:action}, //Data send to server from ajax method
+    success:function(data)
+    {
+     fetchUser();    // fetchUser() function has been called and it will load data under divison tag with id result
+     alert(data);    //It will pop up which data it was received from server side
+    }
+   })
+  }
+  else  //Confim Box if cancel then 
+  {
+   return false; //No action will perform
+  }
+ });
+});
+</script>
